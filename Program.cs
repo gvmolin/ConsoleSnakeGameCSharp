@@ -44,20 +44,20 @@ namespace ConsoleApp1
     }
 
     class Snake {
-        public enum StatusEnum { alive, dead, feed }
+        //public enum StatusEnum { alive, dead, feed }
 
         private List<int[]> snakePos; // exemplo: [[3,10],[3,11],[3,12]] -> [x, y]
         private int[] apple;
-        private StatusEnum snakeStatus;
+        private Boolean snakeAlive;
         public Snake() 
         {
-            snakeStatus = StatusEnum.alive;
+            snakeAlive = true;
             snakePos = [[30, 10], [30, 11], [30, 12], [30,13], [30, 14]];
             apple = [10, 10];
         }
 
-        public StatusEnum getSnakeStatus() { 
-            return this.snakeStatus;
+        public Boolean getSnakeStatus() { 
+            return this.snakeAlive;
         }
 
         public List<int[]> getSnakePos() 
@@ -83,24 +83,22 @@ namespace ConsoleApp1
         public void moveSnake(ConsoleKeyInfo key) 
         {
             int[] head = (int[])this.snakePos.Last().Clone();
-
-            if ((string.Join(",", this.apple) == string.Join(",", head))) 
-            {
-                this.snakeStatus = StatusEnum.feed;
-            }
-
-            if (this.snakeStatus == StatusEnum.alive)
+            //feeding logic
+            if ((string.Join(",", this.apple) != string.Join(",", head))) 
             {
                 this.snakePos.RemoveAt(0);
             }
-            else if (this.snakeStatus == StatusEnum.feed) 
-            {
-                this.snakeStatus = StatusEnum.alive;
 
+            //self-colision logic
+            for (int i = 0; i < this.snakePos.Count - 1; i++) 
+            {
+                if (string.Join(",", this.snakePos[i]) == string.Join(",", head))
+                {
+                    throw new Exception("MORTE!");
+                }
             }
-    
-            
-            
+
+            //movement logic
             if (key.Key == ConsoleKey.UpArrow)
             {
                 snakePos.Add([head[0], head[1] - 1]);
